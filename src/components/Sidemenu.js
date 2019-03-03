@@ -77,25 +77,46 @@ class SideMenu extends Component {
         </View>
 
         <View style={styles.navLinks}>
-          {/* <TouchableOpacity style={styles.nav}>
+          <TouchableOpacity
+            style={styles.nav}
+            onPress={() => this.navigateToScreen("Home")}
+          >
             <Image
-              source={require("../../assets/images/feed.png")}
+              source={require("../../assets/icons/map_icon.png")}
               style={styles.navImg}
+              resizeMode="contain"
             />
-            <Text style={styles.navTxt}>My feed</Text>
+            <Text style={styles.navTxt}>My map</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.nav}>
+          <TouchableOpacity
+            style={styles.nav}
+            onPress={() => this.navigateToScreen("AddCircle")}
+          >
             <Image
-              source={require("../../assets/images/photo.png")}
+              source={require("../../assets/icons/join_nav.png")}
               style={styles.navImg}
+              resizeMode="contain"
             />
-            <Text style={styles.navTxt}>My photos</Text>
-          </TouchableOpacity>*/}
-          <TouchableOpacity style={styles.nav} onPress={this.logout}>
-            {/* <Image
-              source={require("../../assets/images/logout.png")}
+            <Text style={styles.navTxt}>Add a circle</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.nav}
+            onPress={() => this.navigateToScreen("Profile")}
+          >
+            <Image
+              source={require("../../assets/icons/user_profile.png")}
               style={styles.navImg}
-            /> */}
+              resizeMode="contain"
+            />
+            <Text style={styles.navTxt}>My profile</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.nav} onPress={this.logout}>
+            <Image
+              source={require("../../assets/icons/logout.png")}
+              style={styles.navImg}
+              resizeMode="contain"
+            />
             <Text style={styles.navTxt}>Logout</Text>
           </TouchableOpacity>
         </View>

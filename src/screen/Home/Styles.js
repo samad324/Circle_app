@@ -31,7 +31,9 @@ export const Styles = StyleSheet.create({
   mapBtns: {
     position: "absolute",
     bottom: height * 0.07,
-    alignItems: "flex-end",
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: width,
     paddingLeft: width * 0.01
   },
@@ -63,5 +65,16 @@ export const Styles = StyleSheet.create({
   },
   dropDown: {
     width: width * 0.8
+  },
+  btnDanger: {
+    margin: 10,
+    width: 70,
+    height: 70,
+    backgroundColor: Colors.dark,
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: Colors.red,
+    borderWidth: 4,
+    borderRadius: 1000
   }
 });

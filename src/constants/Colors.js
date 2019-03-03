@@ -5,7 +5,8 @@ const blueVersion = {
   secondaryLight: "#00c2a8",
   light: "#fff",
   dark: "#333",
-  lightGrey: "#99999c"
+  lightGrey: "#99999c",
+  red: "#f40c00"
 };
 
 export default blueVersion;

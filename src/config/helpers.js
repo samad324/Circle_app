@@ -67,7 +67,7 @@ export const registerForPushNotificationsAsync = async () => {
   return token;
 };
 
-export const sendNotification = (token, title, message) => {
+export const sendNotification = token => {
   return new Promise((resolve, reject) => {
     fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
@@ -77,15 +77,9 @@ export const sendNotification = (token, title, message) => {
         accept: "application/json",
         "accept-encoding": "gzip, deflate"
       },
-      body: JSON.stringify({
-        to: token,
-        title: title,
-        body: message,
-        sound: "default"
-      })
+      body: JSON.stringify(token)
     })
-      .then(res => res.json())
-      .then(res => resolve(res))
+      .then(() => resolve())
       .catch(err => reject(err));
   });
 };

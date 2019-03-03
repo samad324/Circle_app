@@ -12,7 +12,11 @@ import { Button, Icon, Item, Picker } from "native-base";
 
 import { Colors } from "../../constants/index";
 import { Styles } from "./Styles";
-import { getLocationAsync, showToast } from "../../config/helpers";
+import {
+  getLocationAsync,
+  showToast,
+  sendNotification
+} from "../../config/helpers";
 import firebase, {
   searchInDB,
   updateCircleLocationsInDB
@@ -34,7 +38,7 @@ export class componentName extends Component {
                 ? navigation.navigate("AddMember", {
                     code: params.selectedCircle
                   })
-                : showToast("You are not admin! ", "warning")
+                : showToast("You are not an admin! ", "warning")
               : showToast("Please select a circle first", "warning")
           }
           style={Styles.norBtn}
@@ -92,7 +96,6 @@ export class componentName extends Component {
         querySnapshot.forEach(doc => {
           markers.push(doc.data());
         });
-        console.log(markers);
         this.setState({ markers });
       });
 
@@ -108,7 +111,6 @@ export class componentName extends Component {
       const isAdmin = await circle[0].admin.includes(user.uid);
       return circle[0], isAdmin;
     } catch (error) {
-      console.log(error);
       showToast("Something went wrong!", "danger");
     }
   };
@@ -123,13 +125,13 @@ export class componentName extends Component {
           const data = {
             location,
             timeStamp: Date.now(),
-            uid: user.uid
+            uid: user.uid,
+            pushToken: user.pushToken
           };
           await updateCircleLocationsInDB(code, data);
         });
-      }, 10000);
+      }, 60000);
     } catch (e) {
-      console.log(e);
       showToast(e.message, "danger");
     }
   };
@@ -142,6 +144,35 @@ export class componentName extends Component {
   navigate = (route, prop) => {
     const { navigate } = this.props.navigation;
     navigate(route, prop);
+  };
+
+  sendAlert = async () => {
+    const { selectedCircle, markers } = this.state;
+    const { user } = this.props;
+    if (!selectedCircle) {
+      return showToast("Please select one for your circles!", "danger");
+    }
+    this.setState({ isload: true });
+    const tokens = markers.map(marker => {
+      const data = {
+        to: marker.pushToken,
+        title: "Danger Alert",
+        body: `${user.name} is in danger, please react out to him/her...`
+      };
+      if (user.pushToken !== marker.push) {
+        return data;
+      }
+    });
+    console.log(tokens);
+    try {
+      await sendNotification(tokens);
+      this.setState({ isload: false });
+      showToast("Everyone was notified!", "success");
+    } catch (error) {
+      console.log(error);
+      this.setState({ isload: false });
+      showToast("Something went wrong!", "danger");
+    }
   };
 
   renderMap = () => {
@@ -169,37 +200,50 @@ export class componentName extends Component {
           {this.renderCircleDropDown(user ? user.circles : [])}
         </View>
         <View style={Styles.mapBtns}>
-          <TouchableOpacity
-            style={Styles.smallBtns}
-            onPress={() => this.navigate("JoinCircle", {})}
-          >
-            <Image
-              source={require("../../../assets/icons/join.png")}
-              style={Styles.iconImg}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={Styles.smallBtns}
-            onPress={() => this.navigate("AddCircle", {})}
-          >
-            <Image
-              source={require("../../../assets/icons/add_circle.png")}
-              style={Styles.iconImg}
-            />
-          </TouchableOpacity>
+          <View>
+            <TouchableOpacity style={Styles.btnDanger} onPress={this.sendAlert}>
+              <Image
+                source={require("../../../assets/icons/danger.png")}
+                style={Styles.iconImg}
+              />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity
+              style={Styles.smallBtns}
+              onPress={() => this.navigate("JoinCircle", {})}
+            >
+              <Image
+                source={require("../../../assets/icons/join.png")}
+                style={Styles.iconImg}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={Styles.smallBtns}
+              onPress={() => this.navigate("AddCircle", {})}
+            >
+              <Image
+                source={require("../../../assets/icons/add_circle.png")}
+                style={Styles.iconImg}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
   };
 
   generateMarkers = markers => {
+    const { user } = this.props;
     return markers.map((value, index) => {
+      if (value.uid == user.uid) return;
       return (
         <MapView.Marker
           coordinate={{
             latitude: value.location.latitude,
             longitude: value.location.longitude
           }}
+          key={Math.random().toString()}
           flat={true}
           title={value.name}
           style={{ width: 60, height: 60 }}

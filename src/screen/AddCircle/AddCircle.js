@@ -70,7 +70,8 @@ export class componentName extends Component {
         uid: user.uid,
         photo: user.photo,
         name: user.name,
-        timeStamp: Date.now()
+        timeStamp: Date.now(),
+        pushToken: user.pushToken
       };
 
       await addToDB("circles", cirleData);

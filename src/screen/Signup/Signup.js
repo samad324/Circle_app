@@ -14,6 +14,7 @@ import { Styles } from "./Styles";
 import { uploadImages, updateDB } from "../../config/firebase";
 import { updateUser } from "../../store/actions/authAction";
 import { showToast } from "../../config/helpers";
+import { Colors } from "../../constants";
 
 export class SignUp extends Component {
   constructor(props) {
@@ -145,13 +146,13 @@ export class SignUp extends Component {
             </Item>
           </View>
           <View styles={Styles.signupBtnContainer}>
-            <Button rounded style={Styles.signupBtn} onPress={this.signUp}>
+            <TouchableOpacity style={Styles.nextBtn} onPress={this.signUp}>
               {isLoading ? (
-                <ActivityIndicator color="#fff" size="small" />
+                <ActivityIndicator color={Colors.light} size="large" />
               ) : (
-                <Text style={Styles.btnText}>Save</Text>
+                <Text style={Styles.btnTxt}>Save</Text>
               )}
-            </Button>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

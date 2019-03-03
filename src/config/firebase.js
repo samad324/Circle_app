@@ -62,10 +62,15 @@ export const getUser = async userData => {
       userData.isNew = true;
       return userData;
     }
-    console.log(user);
+    await setUser({ pushToken: userData.pushToken, uid: userData.uid });
     userData.circles = user.data().circles || [];
     userData.isNew = false;
-    return userData;
+    return {
+      ...userData,
+      ...user.data(),
+      isNew: false,
+      pushToken: userData.pushToken
+    };
   } catch (error) {
     throw error;
   }

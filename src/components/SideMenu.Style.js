@@ -1,6 +1,6 @@
 import { Dimensions } from "react-native";
 
-import { Colors } from "../constants/index";
+import { Colors, Fonts } from "../constants/index";
 
 const { width, height } = Dimensions.get("window");
 
@@ -43,7 +43,8 @@ export const styles = {
     color: Colors.light,
     marginLeft: width * 0.03,
     fontSize: width * 0.04,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    fontFamily: Fonts.primaryRegular
   },
   FollowContainer: {
     flexDirection: "column",
@@ -66,10 +67,12 @@ export const styles = {
     marginTop: height * 0.04
   },
   navImg: {
-    width: width * 0.07,
-    height: height * 0.03
+    width: 30,
+    height: 30,
+    padding: 8
   },
   navTxt: {
+    fontFamily: Fonts.primaryRegular,
     fontSize: width * 0.032,
     color: "#343439",
     paddingLeft: width * 0.05

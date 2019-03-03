@@ -1,6 +1,6 @@
 import { Dimensions } from "react-native";
 
-import { Colors } from "../../constants/index";
+import { Colors, Fonts } from "../../constants/index";
 
 const { width, height } = Dimensions.get("window");
 
@@ -54,12 +54,10 @@ export const Styles = {
   inputFieldsWrapper: {
     paddingLeft: width * 0.07,
     paddingRight: width * 0.08,
-    marginTop: height * 0.026
+    marginTop: height * 0.026,
+    width: width
   },
   signupBtnContainer: {
-    width: width,
-    paddingLeft: width * 0.2,
-    paddingRight: width * 0.2,
     alignItems: "center"
   },
   signupBtn: {
@@ -71,14 +69,25 @@ export const Styles = {
     marginHorizontal: 42,
     height: 56
   },
-  btnText: {
-    color: "#fff",
-    fontSize: 18,
-    alignSelf: "center"
-  },
   headerStyle: {
     textAlign: "center",
     flex: 1,
     marginRight: width * 0.2
+  },
+  nextBtn: {
+    alignSelf: "center",
+    marginTop: height * 0.02,
+    backgroundColor: Colors.primaryLight,
+    width: width * 0.6,
+    height: height * 0.08,
+    borderWidth: 2,
+    borderRadius: 4,
+    borderColor: Colors.light,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  btnTxt: {
+    color: Colors.light,
+    fontFamily: Fonts.facon
   }
 };

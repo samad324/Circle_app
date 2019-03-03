@@ -12,6 +12,7 @@ import Home from "../screen/Home/Home";
 import AddCircleScreen from "../screen/AddCircle/AddCircle";
 import JoinCircleScreen from "../screen/JoinCircle/JoinCircle";
 import AddMemberScreen from "../screen/AddMember/AddMember";
+import ProfileScreen from "../screen/Signup/Signup";
 
 const { width } = Dimensions.get("window");
 
@@ -20,7 +21,8 @@ const MainScreen = createStackNavigator(
     Home: { screen: Home },
     AddCircle: { screen: AddCircleScreen },
     AddMember: { screen: AddMemberScreen },
-    JoinCircle: { screen: JoinCircleScreen }
+    JoinCircle: { screen: JoinCircleScreen },
+    Profile: { screen: ProfileScreen }
   },
   {
     defaultNavigationOptions: ({ navigation }) => {

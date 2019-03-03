@@ -76,7 +76,8 @@ export class AddMember extends Component {
       const locationData = {
         location,
         uid: user.uid,
-        timeStamp: Date.now()
+        timeStamp: Date.now(),
+        pushToken: user.pushToken
       };
 
       console.log(circles, circleResult[0], locationData, circles);
