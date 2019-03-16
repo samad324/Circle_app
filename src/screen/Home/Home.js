@@ -7,8 +7,9 @@ import {
   ActivityIndicator
 } from "react-native";
 import { connect } from "react-redux";
-import MapView, { Marker } from "react-native-maps";
-import { Button, Icon, Item, Picker } from "native-base";
+import MapView, { Callout } from "react-native-maps";
+import { Button, Icon, Item, Picker, Thumbnail } from "native-base";
+import { Location, TaskManager } from "expo";
 
 import { Colors } from "../../constants/index";
 import { Styles } from "./Styles";
@@ -21,6 +22,42 @@ import firebase, {
   searchInDB,
   updateCircleLocationsInDB
 } from "../../config/firebase";
+import { store } from "../../store/store";
+import moment from "moment";
+
+const LOCATION_TASK = "background-location";
+
+TaskManager.defineTask(LOCATION_TASK, ({ data, error }) => {
+  if (error) {
+    showToast(e.message, "danger");
+    return;
+  }
+  if (data) {
+    const { locations } = data;
+    console.log(locations);
+    watchLocation(locations);
+  }
+});
+
+const watchLocation = async locations => {
+  const { user } = await store.getState().authReducer;
+
+  const location = locations[0].coords;
+  try {
+    user.circles.map(async ({ code }) => {
+      const data = {
+        location,
+        timeStamp: locations[0].timestamp,
+        uid: user.uid,
+        pushToken: user.pushToken
+      };
+
+      await updateCircleLocationsInDB(code, data);
+    });
+  } catch (e) {
+    showToast(e.message, "danger");
+  }
+};
 
 export class componentName extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -69,6 +106,9 @@ export class componentName extends Component {
   }
 
   componentDidMount = async () => {
+    // BackgroundFetch.setMinimumIntervalAsync(15);
+    // BackgroundFetch.registerTaskAsync("UPDATE_LOCATION");
+
     const currentLocation = await getLocationAsync();
     this.watchLocation();
     this.setState({ currentLocation, isload: false });
@@ -116,11 +156,17 @@ export class componentName extends Component {
   };
 
   watchLocation = async () => {
+    await Location.startLocationUpdatesAsync(LOCATION_TASK, {
+      accuracy: Location.Accuracy.Balanced,
+      timeInterval: 10000,
+      distanceInterval: 10
+    });
+
     const { user } = this.props;
-    const { markers } = this.state;
+
+    const location = await getLocationAsync();
     try {
-      this.interval = setInterval(async () => {
-        const location = await getLocationAsync();
+      this.interval = setInterval(() => {
         user.circles.map(async ({ code }) => {
           const data = {
             location,
@@ -163,7 +209,6 @@ export class componentName extends Component {
         return data;
       }
     });
-    console.log(tokens);
     try {
       await sendNotification(tokens);
       this.setState({ isload: false });
@@ -277,6 +322,34 @@ export class componentName extends Component {
               />
             </View>
           </View>
+          <Callout>
+            <View
+              style={{
+                width: 240,
+                height: 80,
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "row"
+              }}
+            >
+              {/* <View style={{ width: 60, height: 60 }}>
+                <Image
+                  style={{
+                    width: 60,
+                    height: 60,
+                    borderRadius: 1000,
+                    borderWidth: 2,
+                    borderColor: Colors.primaryLight
+                  }}
+                  source={{ uri: value.photo }}
+                />
+              </View> */}
+              <View>
+                <Text>name: {value.name}</Text>
+                <Text>Last Update: {moment(value.timeStamp).fromNow()}</Text>
+              </View>
+            </View>
+          </Callout>
         </MapView.Marker>
       );
     });

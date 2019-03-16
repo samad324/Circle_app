@@ -10,10 +10,13 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { Toast } from "native-base";
+import { Location } from "expo";
 
 import { styles } from "./SideMenu.Style";
 import { onLogout } from "../store/actions/authAction";
 import { logout } from "../config/firebase";
+
+const LOCATION_TASK = "background-location";
 
 class SideMenu extends Component {
   constructor(props) {
@@ -41,6 +44,7 @@ class SideMenu extends Component {
     try {
       await logout();
       await onLogout();
+      await Location.stopLocationUpdatesAsync(LOCATION_TASK);
       this.navigateTo("Login");
     } catch (error) {
       console.log(error);
